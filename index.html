@@ -1,74 +1,324 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dark / Light Mode with Toggle</title>
-  <style>
-    body {
-      height: 100vh;
-      width: 100%;
-      transition: background-color 0.3s, color 0.3s;
-      font-family: sans-serif;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      #yourpassword{
+        transition: all 1s;
+        font-weight: bold;
+        font-size: clamp(12px , 4vw ,16px);
+      }
+      .bold{
+        font-weight: bold;
+      }
 
-    .dark-mode {
-      background-color: black;
-      color: white;
-    }
 
-    .light-mode {
-      background-color: rgb(249, 242, 242);
-      color: black;
-    }
+    </style>
+     <style>
+      *, *::before, *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
 
-    button {
-      padding: 10px 20px;
-      margin: 10px;
-      cursor: pointer;
-      font-size: 16px;
-      border: 2px solid aqua;
-      background-color: purple;
-      color: white;
- 
-    }
-  </style>
-</head>
-<body class="light-mode">
-  <button class="dark-btn">Dark Mode</button>
-  <button class="light-btn">Light Mode</button>
+      :root {
+        --raspberry: #c0146c;
+        --raspberry-light: #e91e8c;
+        --grape: #7c3aed;
+        --orchid: #d946ef;
+        --blush: #f472b6;
+        --purple-deep: #1a0428;
+        --glass-bg: rgba(255, 255, 255, 0.06);
+        --glass-border: rgba(255, 255, 255, 0.15);
+        --text-primary: #fdf2f8;
+        --text-muted: rgba(253, 242, 248, 0.55);
+      }
 
-  <script>
-    const body = document.querySelector("body");
-    const darkBtn = document.querySelector(".dark-btn");
-    const lightBtn = document.querySelector(".light-btn");
-    body.classList.toggle("light-mode" );
-    let theme = localStorage.getItem("theme")
+      body {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'DM Sans', sans-serif;
+        background: var(--purple-deep);
+        overflow: hidden;
+        position: relative;
+      }
 
-    if (theme === "dark") {
-      body.classList.add("dark-mode")
-      body.classList.remove("light-mode")
-    }
+      /* Animated background orbs */
+      body::before,
+      body::after {
+        content: '';
+        position: fixed;
+        border-radius: 50%;
+        filter: blur(90px);
+        pointer-events: none;
+        z-index: 0;
+      }
+      body::before {
+        width: min(60vw, 500px);
+        height: min(60vw, 500px);
+        background: radial-gradient(circle, rgba(192,20,108,0.45), transparent 70%);
+        top: -15%;
+        right: -10%;
+        animation: orbFloat 8s ease-in-out infinite alternate;
+      }
+      body::after {
+        width: min(55vw, 450px);
+        height: min(55vw, 450px);
+        background: radial-gradient(circle, rgba(109,40,217,0.45), transparent 70%);
+        bottom: -15%;
+        left: -10%;
+        animation: orbFloat 10s ease-in-out infinite alternate-reverse;
+      }
 
-    // Dark Mode button click
-    darkBtn.addEventListener("click", function() {
-      body.classList.toggle("dark-mode", true);   // Force add dark
-      body.classList.toggle("light-mode", false); // Force remove light 
-      localStorage.setItem("theme","dark")
-    });
+      @keyframes orbFloat {
+        from { transform: translateY(0) scale(1); }
+        to   { transform: translateY(40px) scale(1.1); }
+      }
 
-    // Light Mode button click
-    lightBtn.addEventListener("click", function() {
-      body.classList.toggle("light-mode", true);  // Force add light
-      body.classList.toggle("dark-mode", false);  // Force remove dark
-      localStorage.setItem("theme","light")
+      /* Glass card wrapping the form */
+      form {
+        position: relative;
+        z-index: 1;
+        width: min(92vw, 420px);
+        padding: clamp(28px, 6vw, 48px) clamp(24px, 6vw, 44px);
+        background: var(--glass-bg);
+        backdrop-filter: blur(28px) saturate(180%);
+        -webkit-backdrop-filter: blur(28px) saturate(180%);
+        border: 1px solid var(--glass-border);
+        border-radius: 24px;
+        box-shadow:
+          0 8px 48px rgba(0,0,0,0.4),
+          inset 0 1px 0 rgba(255,255,255,0.12),
+          0 0 0 1px rgba(192,20,108,0.15);
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        animation: slideUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+      }
 
-    });
+      form::before {
+        content: '🔐';
+        display: block;
+        text-align: center;
+        font-size: 40px;
+        margin-bottom: 4px;
+      }
+
+      @keyframes slideUp {
+        from { opacity: 0; transform: translateY(36px) scale(0.97); }
+        to   { opacity: 1; transform: translateY(0) scale(1); }
+      }
+
+      /* Password input */
+      input[type="password"] {
+        width: 100%;
+        padding: 14px 18px;
+        background: rgba(255, 255, 255, 0.07);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid var(--glass-border);
+        border-radius: 14px;
+        color: var(--text-primary);
+        font-family: 'DM Sans', sans-serif;
+        font-size: clamp(14px, 3.5vw, 16px);
+        outline: none;
+        transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
+      }
+#forgotform input{
+margin-bottom: 1em;
+}
+      input[type="password"]::placeholder {
+        color: var(--text-muted);
+        font-weight: 300;
+      }
+
+      input[type="password"]:focus {
+        border-color: var(--raspberry-light);
+        background: rgba(255, 255, 255, 0.11);
+        box-shadow: 0 0 0 3px rgba(233,30,140,0.2), 0 4px 24px rgba(0,0,0,0.2);
+      }
+
+      /* Submit button */
+      #btn,#resetbtn {
+        width: 100%;
+        padding: clamp(13px, 3vw, 16px);
+        background: linear-gradient(135deg, var(--raspberry) 0%, var(--grape) 100%);
+        border: none;
+        border-radius: 14px;
+        color: #fff;
+        font-family: 'DM Sans', sans-serif;
+        font-size: clamp(14px, 3.5vw, 16px);
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.3s;
+        margin-top: 1em;
+        box-shadow: 0 4px 20px rgba(192,20,108,0.45);
+      }
+
+      #btn,#resetbtn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(192,20,108,0.55);
+      }
+
+      #btn,#resetbtn:active {
+        transform: translateY(0);
+      }
+
+      /* Login button */
+      button {
+        background: rgba(255,255,255,0.07);
+        border: 1px solid var(--glass-border);
+        border-radius: 10px;
+        color: var(--text-muted);
+        font-family: 'DM Sans', sans-serif;
+        font-size: clamp(12px, 3vw, 13px);
+        padding: 8px 16px;
+        cursor: pointer;
+        transition: background 0.2s, color 0.2s;
+        width: fit-content;
+        align-self: flex-end;
+      }
+
+      button:hover {
+        background: rgba(255,255,255,0.13);
+        color: var(--blush);
+      }
+
+      /* Result messages */
+      #yourpassword , #forgotmsg ,#forgot{
+        transition: all 1s;
+        font-weight: bold;
+        font-size: clamp(12px, 4vw, 16px);
+        text-align: center;
+        min-height: 20px;
+        color: var(--text-primary);
+        letter-spacing: 0.02em;
+      }
+
+      #wrongpassword {
+        font-size: clamp(12px, 3vw, 13px);
+        color: var(--text-muted);
+        text-align: center;
+        word-break: break-all;
+      }
+
+      .bold {
+        font-weight: bold;
+        color: var(--blush);
+      }
+
+      @media (max-width: 360px) {
+        form { border-radius: 18px; }
+      }
+    </style>
+
+  </head>
+  <body>
+    <form action="" onsubmit="checkpassword(event)" id="mainform">
+      <button>Login</button>
+      <input
+        type="password"
+        name=""
+        id="password"
+        placeholder="enter password"
+        title="password must be atleast 8 character"
+        pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!/@])[A-Za-z\d!/@]{8,50}$"
+  required
+      />
+   <div id="yourpassword"></div>
+   <div id="wrongpassword"></div>
+   <div id="forgot" onclick="display()">Forgot Password</div>
+      <input  id="resetbtn" type="submit" value="Submit" />
+    </form>
+    
+    <form action="" id="forgotform" onsubmit="forgot(event)">
+      <input
+        type="password"
+        name=""
+        id="newpassword"
+        placeholder="enter password"
+        title="password must be atleast 8 character"
+        pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!/@])[A-Za-z\d!/@]{8,50}$"
+  required
+      />
+      <input
+        type="password"
+        name=""
+        id="confirmpassword"
+        placeholder="enter password"
+        title="password must be atleast 8 character"
+        pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!/@])[A-Za-z\d!/@]{8,50}$"
+  required
+      />
+   <div id="forgotmsg" style="font-weight: normal;"></div>
+
+      <input onclick="" id="btn" type="submit" value="Submit" />
+    </form>
+    
+    <script>
+let mypassword = localStorage.getItem("mypassword") || "Khadija@";   
+    let  forgotmsg = document.getElementById("forgotmsg");
+      let mainform = document.getElementById("mainform");
+      let fgtform = document.getElementById("forgotform");
+      mypassword.toLowerCase()
+      fgtform.style.display ="none"
+      
+      function checkpassword(event) {
+        
+        event.preventDefault();
+        let passworrd = document.getElementById("password").value;
+        console.log(passworrd);
+        
+        if (passworrd == mypassword) {
+          yourpassword.innerHTML = "Access Granted"
+          yourpassword.style.color = "green"
+
+        
+        }
+        else{
+          yourpassword.innerHTML = "You enter the Wrong password";
+let wrong = document.getElementById("wrongpassword");
+wrong.innerHTML = "<span class='bold'> You entered: " + passworrd ;
+ wrong.style.color = "tomato"
+        }
+      }
+      function display() {
+        mainform.style.display ="none"
+      fgtform.style.display ="block"
+
+      }
+
+
+      function forgot(event) {
+  event.preventDefault();
+
+  let newpass = document.getElementById("newpassword").value;
+  let confirmpassword = document.getElementById("confirmpassword").value;
+  let forgotmessage = document.getElementById("forgotmsg");
+
   
-  </script>
-</body>
+
+  if (newpass === confirmpassword) {
+    mypassword = newpass;
+
+    localStorage.setItem("mypassword", newpass);
+
+    console.log("Saved password:", localStorage.getItem("mypassword"));
+
+    forgotmsg.innerHTML = "Password Updated Successfully ✅";
+    forgotmsg.style.color = "lightgreen";
+  }
+  else if (newpass !== confirmpassword){
+    forgotmsg.innerHTML = "Password does't Match ❌";
+
+  }
+}
+    </script>
+    
+  </body>
 </html>
