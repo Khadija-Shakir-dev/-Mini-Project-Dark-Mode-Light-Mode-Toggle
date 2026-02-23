@@ -46,20 +46,29 @@
     const body = document.querySelector("body");
     const darkBtn = document.querySelector(".dark-btn");
     const lightBtn = document.querySelector(".light-btn");
-    body.classList.toggle("light-mode" )
-    
+    body.classList.toggle("light-mode" );
+    let theme = localStorage.getItem("theme")
+
+    if (theme === "dark") {
+      body.classList.add("dark-mode")
+      body.classList.remove("light-mode")
+    }
+
     // Dark Mode button click
     darkBtn.addEventListener("click", function() {
       body.classList.toggle("dark-mode", true);   // Force add dark
       body.classList.toggle("light-mode", false); // Force remove light 
+      localStorage.setItem("theme","dark")
     });
 
     // Light Mode button click
     lightBtn.addEventListener("click", function() {
       body.classList.toggle("light-mode", true);  // Force add light
       body.classList.toggle("dark-mode", false);  // Force remove dark
-    });
+      localStorage.setItem("theme","light")
 
+    });
+  
   </script>
 </body>
 </html>
